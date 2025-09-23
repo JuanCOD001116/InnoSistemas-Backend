@@ -11,6 +11,12 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/api/health")
 public class DatabaseHealthController {
@@ -20,6 +26,12 @@ public class DatabaseHealthController {
 		this.dataSource = dataSource;
 	}
 
+	@Operation(summary = "Salud DB", description = "Verifica conexión a la base de datos")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "DB UP",
+					content = @Content(schema = @Schema(implementation = Object.class))),
+			@ApiResponse(responseCode = "503", description = "DB DOWN")
+	})
 	@GetMapping("/db")
 	public ResponseEntity<Map<String, Object>> databaseHealth() {
 		Map<String, Object> body = new HashMap<>();
