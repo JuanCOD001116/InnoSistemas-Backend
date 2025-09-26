@@ -1,0 +1,37 @@
+# Archivo de configuración Docker Compose para desarrollo
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL para desarrollo local
+  postgres:
+    image: postgres:15-alpine
+    container_name: innosistemas-db
+    environment:
+      POSTGRES_DB: innosistemas_dev
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - innosistemas-network
+
+  # Adminer para administración de base de datos
+  adminer:
+    image: adminer
+    container_name: innosistemas-adminer
+    ports:
+      - "8081:8080"
+    networks:
+      - innosistemas-network
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+
+networks:
+  innosistemas-network:
+    driver: bridge
